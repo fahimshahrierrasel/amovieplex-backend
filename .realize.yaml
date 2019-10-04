@@ -1,0 +1,28 @@
+settings:
+  legacy:
+    force: false
+    interval: 0s
+server:
+  status: true
+  open: false
+  port: 5002
+  host: localhost
+schema:
+  - name: amovieplex-backend-api
+    path: .
+    commands:
+      install:
+        status: true
+        method: go build -o app.out ./main.go
+      run:
+        status: true
+        method: ./app.out
+    watcher:
+      paths:
+        - /
+      extensions:
+        - go
+      ignored_paths:
+        - .git
+        - .realize
+        - vendor
