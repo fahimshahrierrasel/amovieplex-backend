@@ -25,7 +25,7 @@ func setupRouter() *gin.Engine {
 		if ok {
 			c.JSON(http.StatusOK, gin.H{"user": user, "value": value})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"user": user, "status": "no value"})
+			c.JSON(http.StatusOK, gin.H{"user": user, "status": "there is no value"})
 		}
 	})
 
