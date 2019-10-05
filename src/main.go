@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,11 +23,14 @@ func setupRouter() *gin.Engine {
 	// Get user value
 	r.GET("/user/:name", func(c *gin.Context) {
 		user := c.Params.ByName("name")
-		value, ok := db[user]
-		if ok {
-			c.JSON(http.StatusOK, gin.H{"user": user, "value": value})
+		nameCollection := GetClient().Database("test").Collection("names")
+		name := Name{user}
+		insertResult, err := nameCollection.InsertOne(c, name)
+		if err != nil {
+			log.Fatal(err)
 		} else {
-			c.JSON(http.StatusOK, gin.H{"user": user, "status": "there is no value"})
+			fmt.Println("Inserted a single document: ", insertResult.InsertedID)
+			c.JSON(http.StatusOK, gin.H{"user": insertResult, "status": "there is no value"})
 		}
 	})
 
