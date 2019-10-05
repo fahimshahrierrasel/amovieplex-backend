@@ -1,14 +1,12 @@
-version: '3.1'
-
+version: "3.1"
 services:
   amovieplex_api:
     build: .
     command: realize start --run
     volumes:
-      - .:/opt/app
+      - ".:/opt/app"
     ports:
-      - '8080:8080' # For app
-      - '5002:5002' # For realize
+      - "8080:8080"
     depends_on:
       - backend-mongodb
 
@@ -16,9 +14,8 @@ services:
     image: mongo
     restart: on-failure
     volumes:
-      - database_vol:/data/db
+      - "database_vol:/data/db"
     ports:
       - "27017:27017"
-
 volumes:
-  database_vol:
+  database_vol: null

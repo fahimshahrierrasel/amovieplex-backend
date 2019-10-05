@@ -2,11 +2,6 @@ settings:
   legacy:
     force: false
     interval: 0s
-server:
-  status: true
-  open: false
-  port: 5002
-  host: localhost
 schema:
   - name: amovieplex-backend-api
     path: .
