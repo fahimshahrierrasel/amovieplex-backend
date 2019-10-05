@@ -4,7 +4,7 @@ services:
     build: .
     command: realize start --run
     volumes:
-      - ".:/opt/app"
+      - "./src:/opt/app/src"
     ports:
       - "8080:8080"
     depends_on:
