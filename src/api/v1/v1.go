@@ -2,6 +2,7 @@ package v1
 
 import (
 	"amovieplex-backend/src/api/helpers"
+	"amovieplex-backend/src/api/v1/rating"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -20,5 +21,6 @@ func ApplyRoutes(routerGroup *gin.RouterGroup) {
 	v1 := routerGroup.Group("/v1")
 	{
 		v1.GET("/ping", ping)
+		rating.ApplyRoutes(v1)
 	}
 }

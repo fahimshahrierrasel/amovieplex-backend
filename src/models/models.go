@@ -1,4 +1,4 @@
-package data
+package models
 
 import "time"
 
@@ -9,9 +9,11 @@ type Genre struct {
 
 // Rating model
 type Rating struct {
-	Name     string
-	AgeLimit int
-	CreateAt time.Time
+	Name      string
+	AgeLimit  int
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt time.Time `bson:",omitempty"`
 }
 
 // Movie model
@@ -19,9 +21,4 @@ type Movie struct {
 	Title       string
 	ReleaseYear string
 	Genre       string
-}
-
-// Name model
-type Name struct {
-	FirstName string
 }
