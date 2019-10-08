@@ -5,9 +5,16 @@ import (
 	database "amovieplex-backend/src/data/db"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load environment variable from .env file
+	err := godotenv.Load()
+	if err != nil {
+		panic(err)
+	}
+
 	app := gin.Default()
 
 	db := database.GetDatabase()

@@ -10,6 +10,7 @@ require (
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/go-cmp v0.3.1 // indirect
+	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/json-iterator/go v1.1.7 // indirect
 	github.com/mattn/go-isatty v0.0.9 // indirect
 	github.com/stretchr/testify v1.4.0 // indirect
