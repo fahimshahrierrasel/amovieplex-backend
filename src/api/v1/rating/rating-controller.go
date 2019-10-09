@@ -44,6 +44,18 @@ func getAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, helpers.MakeResponse(serializer.Response(), false, ""))
 }
 
+func softDelete(ctx *gin.Context) {
+	ratingID := ctx.Param("rating_id")
+	data := map[string]interface{}{}
+	ok := db.SoftDeleteRating(ctx, ratingID)
+	if ok {
+		data["status"] = "Rating Successfully Soft Deleted"
+	} else {
+		data["status"] = "Sorry!!, Rating Not Soft Deleted Unwanted Behaviour"
+	}
+	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, !ok, ""))
+}
+
 func delete(ctx *gin.Context) {
 	ratingID := ctx.Param("rating_id")
 	data := map[string]interface{}{}

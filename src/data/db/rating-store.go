@@ -3,11 +3,11 @@ package db
 import (
 	"amovieplex-backend/src/models"
 	"fmt"
-	"log"
-
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"log"
+	"time"
 )
 
 var (
@@ -53,14 +53,47 @@ func GetAllRating(context *gin.Context) []Rating {
 	return ratings
 }
 
-// DeleteRating will delete the given id
-func DeleteRating(ctx *gin.Context, ratingID string) bool {
+// SoftDeleteRating will only add deleted_at time which declare its deleted softly
+func SoftDeleteRating(ctx *gin.Context, ratingID string) bool {
 	ratingCollection := GetCollection(ctx, collection)
-	idPremitive, err := primitive.ObjectIDFromHex(ratingID)
+
+	idPrimitive, err := primitive.ObjectIDFromHex(ratingID)
 	if err != nil {
 		log.Fatal("primitive.ObjectIDFromHex ERROR:", err)
 	}
-	deleteResult, err := ratingCollection.DeleteOne(ctx, bson.M{"_id": idPremitive})
+
+	filter := bson.M{"_id": idPrimitive}
+	update := bson.D{
+		{"$set", bson.M{
+			"deleted_at": time.Now(),
+		},
+		},
+	}
+
+	updateResult, err := ratingCollection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		log.Fatal(err)
+		return false
+	}
+
+	log.Printf("SoftDelete Rating: %v item(s) Matched and %v item(s) Soft Deleted",
+		updateResult.MatchedCount, updateResult.ModifiedCount)
+
+	if updateResult.ModifiedCount <= 0 {
+		return false
+	}
+	return true
+}
+
+// DeleteRating will delete the given id
+func DeleteRating(ctx *gin.Context, ratingID string) bool {
+	ratingCollection := GetCollection(ctx, collection)
+	idPrimitive, err := primitive.ObjectIDFromHex(ratingID)
+	if err != nil {
+		log.Fatal("primitive.ObjectIDFromHex ERROR:", err)
+	}
+	filter := bson.M{"_id": idPrimitive}
+	deleteResult, err := ratingCollection.DeleteOne(ctx, filter)
 	if err != nil {
 		log.Fatal(err)
 		return false
