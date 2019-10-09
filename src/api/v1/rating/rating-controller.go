@@ -5,9 +5,10 @@ import (
 	"amovieplex-backend/src/data/db"
 	"amovieplex-backend/src/models"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Rating = models.Rating
@@ -31,14 +32,26 @@ func create(ctx *gin.Context) {
 	ok := db.CreateRating(ctx, newRating)
 	if ok {
 		data["status"] = "Rating Successfully Created"
-	}else{
+	} else {
 		data["status"] = "Sorry!!, Rating Not Created Unwanted Behaviour"
 	}
 	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, !ok, ""))
 }
 
 func getAll(ctx *gin.Context) {
+	result := db.GetAllRating(ctx)
+	serializer := RatingSerializer{result}
+	ctx.JSON(http.StatusOK, helpers.MakeResponse(serializer.Response(), false, ""))
+}
+
+func delete(ctx *gin.Context) {
+	ratingID := ctx.Param("rating_id")
 	data := map[string]interface{}{}
-	db.GetAllRating(ctx)
-	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, true, ""))
+	ok := db.DeleteRating(ctx, ratingID)
+	if ok {
+		data["status"] = "Rating Successfully Deleted"
+	} else {
+		data["status"] = "Sorry!!, Rating Not Deleted Unwanted Behaviour"
+	}
+	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, !ok, ""))
 }
