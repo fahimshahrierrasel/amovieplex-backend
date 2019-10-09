@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"log"
+	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -11,7 +12,11 @@ import (
 
 // GetClient return mongo client
 func GetDatabase() *mongo.Database {
-	clientOptions := options.Client().ApplyURI("mongodb://backend-mongodb:27017")
+	// Connection string and db name from the env
+	connectionString := os.Getenv("DB_CONN")
+	dbName := os.Getenv("DB_NAME")
+
+	clientOptions := options.Client().ApplyURI(connectionString)
 	client, err := mongo.NewClient(clientOptions)
 	if err != nil {
 		log.Fatal(err)
@@ -20,7 +25,7 @@ func GetDatabase() *mongo.Database {
 	if err != nil {
 		log.Fatal(err)
 	}
-	database := client.Database("test")
+	database := client.Database(dbName)
 	return database
 }
 

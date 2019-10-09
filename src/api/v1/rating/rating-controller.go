@@ -34,5 +34,11 @@ func create(ctx *gin.Context) {
 	}else{
 		data["status"] = "Sorry!!, Rating Not Created Unwanted Behaviour"
 	}
-	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, ok, ""))
+	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, !ok, ""))
+}
+
+func getAll(ctx *gin.Context) {
+	data := map[string]interface{}{}
+	db.GetAllRating(ctx)
+	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, true, ""))
 }
