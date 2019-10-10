@@ -56,23 +56,16 @@ func GetAllRating(ctx *gin.Context) []Rating {
 // SoftDeleteRating will only add deleted_at time which declare its deleted softly
 func SoftDeleteRating(ctx *gin.Context, ratingID string) bool {
 	ratingCollection := GetCollection(ctx, ratingCollectionName)
-
 	idPrimitive, err := primitive.ObjectIDFromHex(ratingID)
 	if err != nil {
 		log.Fatal("primitive.ObjectIDFromHex ERROR:", err)
 	}
 
 	filter := bson.M{"_id": idPrimitive}
-	update := bson.D{
-		{"$set", bson.M{
-			"deleted_at": time.Now(),
-		},
-		},
-	}
-
+	update := bson.D{{"$set", bson.M{"deleted_at": time.Now()}}}
 	updateResult, err := ratingCollection.UpdateOne(ctx, filter, update)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("ratingCollection.UpdateOne ERROR:", err)
 		return false
 	}
 
@@ -95,7 +88,7 @@ func DeleteRating(ctx *gin.Context, ratingID string) bool {
 	filter := bson.M{"_id": idPrimitive}
 	deleteResult, err := ratingCollection.DeleteOne(ctx, filter)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("genreCollection.DeleteOne ERROR:", err)
 		return false
 	}
 	log.Printf("Delete Rating: %v item(s)", deleteResult.DeletedCount)

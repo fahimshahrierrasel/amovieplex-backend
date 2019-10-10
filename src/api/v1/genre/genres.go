@@ -4,8 +4,11 @@ import "github.com/gin-gonic/gin"
 
 // ApplyRoutes apply router to gin router group
 func ApplyRoutes(routerGroup *gin.RouterGroup) {
-	ratings := routerGroup.Group("/genre")
+	genreRouter := routerGroup.Group("/genre")
 	{
-		ratings.POST("/", create)
+		genreRouter.POST("/", create)
+		genreRouter.GET("/", getAll)
+		genreRouter.DELETE("/:genre_id/soft", softDelete)
+		genreRouter.DELETE("/:genre_id", permanentDelete)
 	}
 }

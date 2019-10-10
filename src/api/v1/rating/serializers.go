@@ -1,40 +1,37 @@
 package rating
 
-import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
-)
+import "go.mongodb.org/mongo-driver/bson/primitive"
 
-// SingleRatingSerializer is the rating serializer
-type SingleRatingSerializer struct {
+// SimpleSerializer is the rating serializer
+type SimpleSerializer struct {
 	Rating
 }
 
-// SimpleRatingResponse structure the return response
-type SimpleRatingResponse struct {
+// SimpleResponse structure the return response
+type SimpleResponse struct {
 	ID       primitive.ObjectID `json:"_id"`
 	Name     string             `json:"name"`
 	AgeLimit int                `json:"age_limit"`
 }
 
-// Response return the SimpleRatingResponse
-func (self *SingleRatingSerializer) Response() SimpleRatingResponse {
-	return SimpleRatingResponse{
-		ID:       self.ID,
-		Name:     self.Name,
-		AgeLimit: self.AgeLimit,
+func (ss *SimpleSerializer) Response() SimpleResponse {
+	return SimpleResponse{
+		ID:       ss.ID,
+		Name:     ss.Name,
+		AgeLimit: ss.AgeLimit,
 	}
 }
 
-// RatingSerializer is the all rating serializer
-type RatingSerializer struct {
+// Serializer is the all rating serializer
+type Serializer struct {
 	Ratings []Rating
 }
 
-func (self *RatingSerializer) Response() []SimpleRatingResponse {
-	response := []SimpleRatingResponse{}
+func (s *Serializer) Response() []SimpleResponse {
+	var response []SimpleResponse
 
-	for _, rating := range self.Ratings {
-		serializer := SingleRatingSerializer{rating}
+	for _, rating := range s.Ratings {
+		serializer := SimpleSerializer{rating}
 		response = append(response, serializer.Response())
 	}
 	return response

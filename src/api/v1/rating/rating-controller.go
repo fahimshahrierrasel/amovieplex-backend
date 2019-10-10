@@ -40,7 +40,7 @@ func create(ctx *gin.Context) {
 
 func getAll(ctx *gin.Context) {
 	result := db.GetAllRating(ctx)
-	serializer := RatingSerializer{result}
+	serializer := Serializer{result}
 	ctx.JSON(http.StatusOK, helpers.MakeResponse(serializer.Response(), false, ""))
 }
 

@@ -34,3 +34,33 @@ func create(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, !ok, ""))
 }
+
+func getAll(ctx *gin.Context) {
+	genres := db.GetAllGenre(ctx)
+	Serializer := Serializer{Genres: genres}
+	ctx.JSON(http.StatusOK, helpers.MakeResponse(Serializer.Response(), false, ""))
+}
+
+func softDelete(ctx *gin.Context) {
+	genreID := ctx.Param("genre_id")
+	data := map[string]interface{}{}
+	ok := db.SoftDeleteGenre(ctx, genreID)
+	if ok {
+		data["status"] = "Genre Successfully Soft Deleted"
+	} else {
+		data["status"] = "Sorry!!, Genre Not Soft Deleted Unwanted Behaviour"
+	}
+	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, !ok, ""))
+}
+
+func permanentDelete(ctx *gin.Context) {
+	genreID := ctx.Param("genre_id")
+	data := map[string]interface{}{}
+	ok := db.DeleteGenre(ctx, genreID)
+	if ok {
+		data["status"] = "Genre Successfully Deleted"
+	} else {
+		data["status"] = "Sorry!!, Genre Not Deleted Unwanted Behaviour"
+	}
+	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, !ok, ""))
+}
