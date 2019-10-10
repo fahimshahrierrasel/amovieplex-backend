@@ -9,6 +9,6 @@ func ApplyRoutes(routerGroup *gin.RouterGroup) {
 		ratings.POST("/", create)
 		ratings.GET("/all", getAll)
 		ratings.DELETE("/:rating_id/soft", softDelete)
-		ratings.DELETE("/:rating_id", delete)
+		ratings.DELETE("/:rating_id", permanentDelete)
 	}
 }

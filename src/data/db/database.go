@@ -2,10 +2,10 @@ package db
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
 	"log"
 	"os"
 
+	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )

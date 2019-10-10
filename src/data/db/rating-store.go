@@ -1,27 +1,27 @@
 package db
 
 import (
+	"log"
+	"time"
+
 	"amovieplex-backend/src/models"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"log"
-	"time"
 )
 
-var (
-	collection = "ratings"
+const (
+	ratingCollectionName = "ratings"
 )
 
 // Rating is the type def of models Ratings
 type Rating = models.Rating
 
 // CreateRating will add new rating to mongodb
-func CreateRating(context *gin.Context, newRating models.Rating) bool {
-	ratingCollection := GetCollection(context, collection)
-	insertResult, err := ratingCollection.InsertOne(context, newRating)
-	fmt.Println(insertResult)
+func CreateRating(ctx *gin.Context, newRating Rating) bool {
+	ratingCollection := GetCollection(ctx, ratingCollectionName)
+	insertResult, err := ratingCollection.InsertOne(ctx, newRating)
+	log.Printf("Create Rating: Inserted Item %v", insertResult.InsertedID)
 	if err != nil {
 		log.Fatal(err)
 		return false
@@ -30,15 +30,15 @@ func CreateRating(context *gin.Context, newRating models.Rating) bool {
 }
 
 // GetAllRating will return all rating
-func GetAllRating(context *gin.Context) []Rating {
-	ratingCollection := GetCollection(context, collection)
-	cursor, err := ratingCollection.Find(context, bson.D{})
+func GetAllRating(ctx *gin.Context) []Rating {
+	ratingCollection := GetCollection(ctx, ratingCollectionName)
+	cursor, err := ratingCollection.Find(ctx, bson.D{})
 	var ratings []Rating
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer cursor.Close(context)
-	for cursor.Next(context) {
+	defer cursor.Close(ctx)
+	for cursor.Next(ctx) {
 		result := Rating{}
 		err := cursor.Decode(&result)
 		if err != nil {
@@ -55,7 +55,7 @@ func GetAllRating(context *gin.Context) []Rating {
 
 // SoftDeleteRating will only add deleted_at time which declare its deleted softly
 func SoftDeleteRating(ctx *gin.Context, ratingID string) bool {
-	ratingCollection := GetCollection(ctx, collection)
+	ratingCollection := GetCollection(ctx, ratingCollectionName)
 
 	idPrimitive, err := primitive.ObjectIDFromHex(ratingID)
 	if err != nil {
@@ -87,7 +87,7 @@ func SoftDeleteRating(ctx *gin.Context, ratingID string) bool {
 
 // DeleteRating will delete the given id
 func DeleteRating(ctx *gin.Context, ratingID string) bool {
-	ratingCollection := GetCollection(ctx, collection)
+	ratingCollection := GetCollection(ctx, ratingCollectionName)
 	idPrimitive, err := primitive.ObjectIDFromHex(ratingID)
 	if err != nil {
 		log.Fatal("primitive.ObjectIDFromHex ERROR:", err)

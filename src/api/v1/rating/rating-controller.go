@@ -4,7 +4,7 @@ import (
 	"amovieplex-backend/src/api/helpers"
 	"amovieplex-backend/src/data/db"
 	"amovieplex-backend/src/models"
-	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -22,7 +22,7 @@ func create(ctx *gin.Context) {
 	data := map[string]interface{}{}
 	var requestBody RequestBody
 	if err := ctx.BindJSON(&requestBody); err != nil {
-		fmt.Println(requestBody)
+		log.Printf("Request Body: %v", requestBody)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest,
 			helpers.MakeResponse(data, true, "request body is not correct"))
 		return
@@ -56,7 +56,7 @@ func softDelete(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, !ok, ""))
 }
 
-func delete(ctx *gin.Context) {
+func permanentDelete(ctx *gin.Context) {
 	ratingID := ctx.Param("rating_id")
 	data := map[string]interface{}{}
 	ok := db.DeleteRating(ctx, ratingID)
