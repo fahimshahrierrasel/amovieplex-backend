@@ -2,11 +2,13 @@ package movie
 
 import (
 	"amovieplex-backend/src/api/helpers"
+	"amovieplex-backend/src/data/db"
 	"amovieplex-backend/src/models"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"net/http"
+	"time"
 )
 
 type Movie = models.Movie
@@ -22,6 +24,10 @@ type RequestBody struct {
 	Rating      string   `json:"rating"`
 }
 
+var (
+	TimeFormatLayout = "2006-01-02"
+)
+
 func create(ctx *gin.Context) {
 	data := map[string]interface{}{}
 	var requestBody RequestBody
@@ -31,7 +37,28 @@ func create(ctx *gin.Context) {
 			helpers.MakeResponse(data, true, "request body is not correct"))
 		return
 	}
-	tempGenres := requestBody.Genres
+	var genres []primitive.ObjectID
+	for _, genreID := range requestBody.Genres {
+		primitiveGenreID, _ := primitive.ObjectIDFromHex(genreID)
+		genres = append(genres, primitiveGenreID)
+	}
+
+	primitiveRatingID, _ := primitive.ObjectIDFromHex(requestBody.Rating)
+
+	releaseTime, err := time.Parse(TimeFormatLayout, requestBody.ReleaseDate)
+	if err != nil {
+		log.Printf("Time Formatting Error: %v", err)
+	}
+
 	newMovie := Movie{Title: requestBody.Title, Plot: requestBody.Plot, Director: requestBody.Director,
-		Starring: requestBody.Starring}
+		Starring: requestBody.Starring, ReleaseDate: releaseTime, RunningTime: requestBody.RunningTime,
+		Genres: genres, Rating: primitiveRatingID, CreatedAt: time.Now(), UpdatedAt: time.Now(), DeletedAt: time.Time{}}
+
+	ok := db.CreateMovie(ctx, newMovie)
+	if ok {
+		data["status"] = "Movie Successfully Created"
+	} else {
+		data["status"] = "Sorry!!, Movie Not Created Unwanted Behaviour"
+	}
+	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, !ok, ""))
 }
