@@ -62,3 +62,33 @@ func create(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, !ok, ""))
 }
+
+func getAll(ctx *gin.Context) {
+	result := db.GetAllMovie(ctx)
+	serializer := Serializer{result}
+	ctx.JSON(http.StatusOK, helpers.MakeResponse(serializer.Response(), false, ""))
+}
+
+func softDelete(ctx *gin.Context) {
+	movieID := ctx.Param("movie_id")
+	data := map[string]interface{}{}
+	ok := db.SoftDeleteMovie(ctx, movieID)
+	if ok {
+		data["status"] = "Movie Successfully Soft Deleted"
+	} else {
+		data["status"] = "Sorry!!, Movie Not Soft Deleted Unwanted Behaviour"
+	}
+	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, !ok, ""))
+}
+
+func permanentDelete(ctx *gin.Context) {
+	movieID := ctx.Param("movie_id")
+	data := map[string]interface{}{}
+	ok := db.DeleteMovie(ctx, movieID)
+	if ok {
+		data["status"] = "Movie Successfully Deleted"
+	} else {
+		data["status"] = "Sorry!!, Movie Not Deleted Unwanted Behaviour"
+	}
+	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, !ok, ""))
+}
