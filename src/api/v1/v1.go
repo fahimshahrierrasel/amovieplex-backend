@@ -2,6 +2,7 @@ package v1
 
 import (
 	"amovieplex-backend/src/api/helpers"
+	"amovieplex-backend/src/api/v1/auth"
 	"amovieplex-backend/src/api/v1/genre"
 	"amovieplex-backend/src/api/v1/movie"
 	"amovieplex-backend/src/api/v1/rating"
@@ -23,6 +24,7 @@ func ApplyRoutes(routerGroup *gin.RouterGroup) {
 	v1 := routerGroup.Group("/v1")
 	{
 		v1.GET("/ping", ping)
+		auth.ApplyRoutes(v1)
 		rating.ApplyRoutes(v1)
 		genre.ApplyRoutes(v1)
 		movie.ApplyRoutes(v1)

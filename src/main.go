@@ -3,6 +3,7 @@ package main
 import (
 	"amovieplex-backend/src/api"
 	database "amovieplex-backend/src/data/db"
+	"amovieplex-backend/src/middlewares"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -19,6 +20,7 @@ func main() {
 
 	db := database.GetDatabase()
 	app.Use(database.Inject(db))
+	app.Use(middlewares.JWTMiddleware())
 
 	api.ApplyRoutes(app)
 
