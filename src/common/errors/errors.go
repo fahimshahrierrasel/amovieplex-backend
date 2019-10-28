@@ -9,6 +9,7 @@ const (
 	ERRAuthLogin
 	ERRAuthLoginTokGen
 	ERRUnauthorized
+	ERRNotFound
 )
 
 func (mpe MoviePlexError) ErrorCode() string {
@@ -19,6 +20,7 @@ func (mpe MoviePlexError) ErrorCode() string {
 		"ERRAuthLogin",
 		"ERRAuthLoginTokGen",
 		"ERRUnauthorized",
+		"ERRNotFound",
 	}[mpe]
 }
 
@@ -30,6 +32,7 @@ func (mpe MoviePlexError) ErrorMessage() string {
 		"User/Password not matched",
 		"Token generation failed",
 		"Unauthorized user or token is not valid",
+		"Requested object not found",
 	}[mpe]
 }
 

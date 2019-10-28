@@ -1,6 +1,8 @@
 package common
 
-import "gopkg.in/square/go-jose.v2/jwt"
+import (
+	"gopkg.in/square/go-jose.v2/jwt"
+)
 
 var roles = []string{"user", "admin"}
 
@@ -18,4 +20,21 @@ func IsValidRole(role string) bool {
 		}
 	}
 	return false
+}
+
+func SetActualValueFrom(given interface{}, defaultValue interface{}) interface{} {
+	switch given.(type) {
+	case int:
+		if given.(int) <= 0 {
+			return defaultValue
+		}
+		return given
+	case string:
+		if given.(string) == "" {
+			return defaultValue
+		}
+		return given
+	}
+
+	return defaultValue
 }
