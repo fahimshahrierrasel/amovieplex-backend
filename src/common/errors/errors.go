@@ -3,17 +3,20 @@ package errors
 type MoviePlexError int
 
 const (
-	ERRReqBody MoviePlexError = iota
+	None MoviePlexError = iota
+	ERRReqBody
 	ERRAuthRegHash
 	ERRAuthRegInvRole
 	ERRAuthLogin
 	ERRAuthLoginTokGen
 	ERRUnauthorized
 	ERRNotFound
+	ERRInvObjID
 )
 
 func (mpe MoviePlexError) ErrorCode() string {
 	return [...]string{
+		"None",
 		"ERRReqBody",
 		"ERRAuthRegHash",
 		"ERRAuthRegInvRole",
@@ -21,11 +24,13 @@ func (mpe MoviePlexError) ErrorCode() string {
 		"ERRAuthLoginTokGen",
 		"ERRUnauthorized",
 		"ERRNotFound",
+		"ERRInvObjID",
 	}[mpe]
 }
 
 func (mpe MoviePlexError) ErrorMessage() string {
 	return [...]string{
+		"None",
 		"Given request body is not correct",
 		"Error Generating Password Hash",
 		"Given role is not valid",

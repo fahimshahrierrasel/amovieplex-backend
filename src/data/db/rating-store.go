@@ -57,7 +57,7 @@ func GetRating(ctx *gin.Context, ratingID string) (Rating, error) {
 	ratingCollection := GetCollection(ctx, ratingCollectionName)
 	idPrimitive, err := primitive.ObjectIDFromHex(ratingID)
 	if err != nil {
-		log.Fatal("primitive.ObjectIDFromHex ERROR:", err)
+		log.Printf("primitive.ObjectIDFromHex ERROR: %v", err)
 	}
 
 	filter := bson.M{"_id": idPrimitive}
@@ -80,7 +80,7 @@ func UpdateRating(ctx *gin.Context, ratingID string, rating Rating) bool {
 	}
 
 	filter := bson.M{"_id": idPrimitive}
-	update := bson.D{{"$set", rating}}
+	update := bson.D{{Key: "$set", Value: rating}}
 	updateResult, err := ratingCollection.UpdateOne(ctx, filter, update)
 	if err != nil {
 		log.Fatal("ratingCollection.UpdateOne ERROR:", err)
@@ -90,10 +90,7 @@ func UpdateRating(ctx *gin.Context, ratingID string, rating Rating) bool {
 	log.Printf("Update Rating: %v item(s) Matched and %v item(s) Updated",
 		updateResult.MatchedCount, updateResult.ModifiedCount)
 
-	if updateResult.ModifiedCount <= 0 {
-		return false
-	}
-	return true
+	return updateResult.ModifiedCount > 0
 }
 
 // SoftDeleteRating will only add deleted_at time which declare its deleted softly
@@ -105,7 +102,7 @@ func SoftDeleteRating(ctx *gin.Context, ratingID string) bool {
 	}
 
 	filter := bson.M{"_id": idPrimitive}
-	update := bson.D{{"$set", bson.M{"deleted_at": time.Now()}}}
+	update := bson.D{{Key: "$set", Value: bson.M{"deleted_at": time.Now()}}}
 	updateResult, err := ratingCollection.UpdateOne(ctx, filter, update)
 	if err != nil {
 		log.Fatal("ratingCollection.UpdateOne ERROR:", err)
@@ -115,10 +112,7 @@ func SoftDeleteRating(ctx *gin.Context, ratingID string) bool {
 	log.Printf("SoftDelete Rating: %v item(s) Matched and %v item(s) Soft Deleted",
 		updateResult.MatchedCount, updateResult.ModifiedCount)
 
-	if updateResult.ModifiedCount <= 0 {
-		return false
-	}
-	return true
+	return updateResult.ModifiedCount > 0
 }
 
 // DeleteRating will delete the given id
@@ -135,8 +129,5 @@ func DeleteRating(ctx *gin.Context, ratingID string) bool {
 		return false
 	}
 	log.Printf("Delete Rating: %v item(s)", deleteResult.DeletedCount)
-	if deleteResult.DeletedCount <= 0 {
-		return false
-	}
-	return true
+	return deleteResult.DeletedCount > 0
 }

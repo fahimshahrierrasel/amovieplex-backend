@@ -57,7 +57,7 @@ func getRating(ctx *gin.Context) {
 	rating, err := db.GetRating(ctx, ratingID)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest,
-			helpers.MakeResponse(common.JSON{}, true, errors.ErrorCodeMessage(errors.ERRAuthLogin)))
+			helpers.MakeResponse(common.JSON{}, true, errors.ErrorCodeMessage(errors.ERRNotFound)))
 		return
 	}
 

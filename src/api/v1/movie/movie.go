@@ -10,6 +10,8 @@ func ApplyRoutes(routerGroup *gin.RouterGroup) {
 	{
 		movies.POST("/", middlewares.Authorized, create)
 		movies.GET("/", getAll)
+		movies.GET("/:movie_id", getMovie)
+		movies.PUT("/:movie_id", middlewares.Authorized, updateMovie)
 		movies.DELETE("/:movie_id/soft", middlewares.Authorized, softDelete)
 		movies.DELETE("/:movie_id", middlewares.Authorized, permanentDelete)
 	}

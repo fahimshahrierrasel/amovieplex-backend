@@ -60,7 +60,7 @@ func SoftDeleteGenre(ctx *gin.Context, genreID string) bool {
 	}
 
 	filter := bson.M{"_id": idPrimitive}
-	update := bson.D{{"$set", bson.M{"deleted_at": time.Now()}}}
+	update := bson.D{{Key: "$set", Value: bson.M{"deleted_at": time.Now()}}}
 	updateResult, err := genreCollection.UpdateOne(ctx, filter, update)
 	if err != nil {
 		log.Fatal("genreCollection.UpdateOne ERROR:", err)
@@ -70,10 +70,7 @@ func SoftDeleteGenre(ctx *gin.Context, genreID string) bool {
 	log.Printf("Soft Delete Genre: %v item(s) Matched and %v item(s) Soft Deleted",
 		updateResult.MatchedCount, updateResult.ModifiedCount)
 
-	if updateResult.ModifiedCount <= 0 {
-		return false
-	}
-	return true
+	return updateResult.ModifiedCount > 0
 }
 
 // DeleteGenre will delete the given id
@@ -90,8 +87,6 @@ func DeleteGenre(ctx *gin.Context, genreID string) bool {
 		return false
 	}
 	log.Printf("Delete Genre: %v item(s)", deleteResult.DeletedCount)
-	if deleteResult.DeletedCount <= 0 {
-		return false
-	}
-	return true
+
+	return deleteResult.DeletedCount > 0
 }
