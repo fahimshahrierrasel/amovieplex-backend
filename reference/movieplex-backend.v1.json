@@ -1,0 +1,155 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "movieplex-backend",
+    "version": "1.0",
+    "description": "API docs for movie plex backend",
+    "contact": {
+      "name": "Md. Fahim Shahrier Rasel",
+      "email": "fahimshahrier2@gmail.com"
+    },
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api/v1"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "User Registration",
+        "tags": [
+          "auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "examples": {
+                  "User Registration Success Response": {
+                    "value": {
+                      "data": {
+                        "status": "User Successfully Created"
+                      },
+                      "error": false,
+                      "message": ""
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object"
+                    },
+                    "error": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "User Registration Bad Request": {
+                    "value": {
+                      "data": {},
+                      "error": true,
+                      "message": "ERRAuthRegInvRole"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "End point for user registration",
+        "operationId": "auth01",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email address of the user. Either email or phone number is required"
+                  },
+                  "phone_no": {
+                    "type": "string",
+                    "minLength": 11,
+                    "description": "phone number of the user. Either email or phone number is required"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "password of the user plain text"
+                  },
+                  "role": {
+                    "type": "string",
+                    "description": "role of the user"
+                  }
+                },
+                "required": [
+                  "password",
+                  "role"
+                ]
+              },
+              "examples": {
+                "Auth Registration Request Body": {
+                  "value": {
+                    "email": "admin@amovieplex.com",
+                    "phone_no": "01447898784",
+                    "password": "asdf1234",
+                    "role": "admin"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Request body to register a user"
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "JWT Token": {
+        "type": "http",
+        "scheme": "Bearer"
+      }
+    }
+  }
+}
