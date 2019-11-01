@@ -11,6 +11,8 @@ func ApplyRoutes(routerGroup *gin.RouterGroup) {
 	{
 		genreRouter.POST("/", middlewares.Authorized, create)
 		genreRouter.GET("/", getAll)
+		genreRouter.GET("/:genre_id", getGenre)
+		genreRouter.PUT("/:genre_id", middlewares.Authorized, updateGenre)
 		genreRouter.DELETE("/:genre_id/soft", middlewares.Authorized, softDelete)
 		genreRouter.DELETE("/:genre_id", middlewares.Authorized, permanentDelete)
 	}

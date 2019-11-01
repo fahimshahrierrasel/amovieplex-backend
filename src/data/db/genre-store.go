@@ -51,6 +51,50 @@ func GetAllGenre(ctx *gin.Context) []Genre {
 	return genres
 }
 
+// GetGenre will get genre from the db with the given id
+func GetGenre(ctx *gin.Context, genreID string) (Genre, error) {
+	genreCollection := GetCollection(ctx, genreCollectionName)
+	idPrimitive, err := primitive.ObjectIDFromHex(genreID)
+	if err != nil {
+		log.Printf("primitive.ObjectIDFromHex ERROR: %v", err)
+		return Genre{}, err
+	}
+
+	filter := bson.M{"_id": idPrimitive}
+	var genre Genre
+	err = genreCollection.FindOne(ctx, filter).Decode(&genre)
+	if err != nil {
+		log.Printf("Error Finding Genre from DB: %v", err)
+		return Genre{}, err
+	}
+	log.Printf("Get Genre: %v", genre)
+
+	return genre, err
+}
+
+// UpdateGenre will update the genre with given genreID and genreUpdates
+func UpdateGenre(ctx *gin.Context, genreID string, genreUpdates Genre) (bool, error) {
+	genreCollection := GetCollection(ctx, genreCollectionName)
+	idPrimitive, err := primitive.ObjectIDFromHex(genreID)
+	if err != nil {
+		log.Fatal("primitive.ObjectIDFromHex ERROR:", err)
+		return false, err
+	}
+
+	filter := bson.M{"_id": idPrimitive}
+	update := bson.D{{Key: "$set", Value: genreUpdates}}
+	updateResult, err := genreCollection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		log.Fatal("genreCollection.UpdateOne ERROR:", err)
+		return false, err
+	}
+
+	log.Printf("Update Genre: %v item(s) Matched and %v item(s) Updated",
+		updateResult.MatchedCount, updateResult.ModifiedCount)
+
+	return updateResult.ModifiedCount > 0, nil
+}
+
 // SoftDeleteGenre will only add deleted_at time which declare its deleted softly
 func SoftDeleteGenre(ctx *gin.Context, genreID string) bool {
 	genreCollection := GetCollection(ctx, genreCollectionName)
