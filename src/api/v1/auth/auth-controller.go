@@ -62,13 +62,14 @@ func register(ctx *gin.Context) {
 		DeletedAt:   time.Time{},
 	}
 
-	ok := db.CreateUser(ctx, newUser)
-	if ok {
-		data["status"] = "User Successfully Created"
-	} else {
-		data["status"] = "Sorry!!, User Not Created Unwanted Behaviour"
+	userID, err := db.CreateUser(ctx, newUser)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest,
+			helpers.MakeResponse(data, true, err.Error()))
 	}
-	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, !ok, ""))
+	data["_id"] = userID
+
+	ctx.JSON(http.StatusOK, helpers.MakeResponse(data, false, ""))
 }
 
 func login(ctx *gin.Context) {

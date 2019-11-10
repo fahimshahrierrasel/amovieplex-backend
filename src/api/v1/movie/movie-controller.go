@@ -37,17 +37,13 @@ type UpdateRequestBody struct {
 	Rating      string   `json:"rating"`
 }
 
-var (
-	TimeFormatLayout = "2006-01-02"
-)
-
 func create(ctx *gin.Context) {
-	data := map[string]interface{}{}
+	data := common.JSON{}
 	var requestBody NewRequestBody
 	if err := ctx.BindJSON(&requestBody); err != nil {
 		log.Printf("Request Body: %v", requestBody)
 		ctx.AbortWithStatusJSON(http.StatusBadRequest,
-			helpers.MakeResponse(data, true, "request body is not correct"))
+			helpers.MakeResponse(data, true, errors.ErrorCodeMessage(errors.ERRReqBody)))
 		return
 	}
 	var genres []primitive.ObjectID
@@ -58,7 +54,7 @@ func create(ctx *gin.Context) {
 
 	primitiveRatingID, _ := primitive.ObjectIDFromHex(requestBody.Rating)
 
-	releaseTime, err := time.Parse(TimeFormatLayout, requestBody.ReleaseDate)
+	releaseTime, err := time.Parse(common.TimeFormatLayout, requestBody.ReleaseDate)
 	if err != nil {
 		log.Printf("Time Formatting Error: %v", err)
 	}
@@ -127,7 +123,7 @@ func updateMovie(ctx *gin.Context) {
 	movie.Director = common.SetActualValueFrom(requestBody.Director, movie.Director).(string)
 	movie.Starring = common.SetActualValueFrom(requestBody.Starring, movie.Starring).(string)
 	if requestBody.ReleaseDate != "" {
-		releaseTime, err := time.Parse(TimeFormatLayout, requestBody.ReleaseDate)
+		releaseTime, err := time.Parse(common.TimeFormatLayout, requestBody.ReleaseDate)
 		if err != nil {
 			log.Printf("Time Formatting Error: %v", err)
 		}

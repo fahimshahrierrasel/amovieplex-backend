@@ -5,6 +5,7 @@ import (
 	"amovieplex-backend/src/api/v1/auth"
 	"amovieplex-backend/src/api/v1/genre"
 	"amovieplex-backend/src/api/v1/movie"
+	"amovieplex-backend/src/api/v1/profile"
 	"amovieplex-backend/src/api/v1/rating"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -28,5 +29,6 @@ func ApplyRoutes(routerGroup *gin.RouterGroup) {
 		rating.ApplyRoutes(v1)
 		genre.ApplyRoutes(v1)
 		movie.ApplyRoutes(v1)
+		profile.ApplyRoutes(v1)
 	}
 }

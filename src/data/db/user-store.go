@@ -14,19 +14,21 @@ const (
 
 type User = models.User
 
-func CreateUser(ctx *gin.Context, newUser User) bool {
+func CreateUser(ctx *gin.Context, newUser User) (primitive.ObjectID, error) {
 	userCollection := GetCollection(ctx, userCollectionName)
 	insertResult, err := userCollection.InsertOne(ctx, newUser)
 	if err != nil {
-		log.Fatal(err)
-		return false
+		log.Printf("Error Inserting New User: %v", err)
+		return primitive.NilObjectID, err
 	}
 	log.Printf("Create User: Inserted Item %v", insertResult.InsertedID)
-	return true
+
+	//userID, _ := primitive.ObjectIDFromHex(insertResult.InsertedID.(string))
+	return insertResult.InsertedID.(primitive.ObjectID), nil
 }
 
 func GetUser(ctx *gin.Context, email string, phoneNo string) (User, error) {
-	var userCollection = GetCollection(ctx, userCollectionName)
+	userCollection := GetCollection(ctx, userCollectionName)
 	var filter primitive.M
 	if len(email) > 0 {
 		filter = bson.M{"email": &email}
@@ -38,7 +40,8 @@ func GetUser(ctx *gin.Context, email string, phoneNo string) (User, error) {
 
 	if err != nil {
 		log.Printf("Finding User from DB Error: %v", err)
+		return User{}, err
 	}
 
-	return user, err
+	return user, nil
 }

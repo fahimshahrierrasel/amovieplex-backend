@@ -5,6 +5,7 @@ import (
 )
 
 var roles = []string{"user", "admin"}
+var TimeFormatLayout = "2006-01-02"
 
 type JSON = map[string]interface{}
 
@@ -23,14 +24,14 @@ func IsValidRole(role string) bool {
 }
 
 func SetActualValueFrom(given interface{}, defaultValue interface{}) interface{} {
-	switch given.(type) {
+	switch value := given.(type) {
 	case int:
-		if given.(int) <= 0 {
+		if value <= 0 {
 			return defaultValue
 		}
 		return given
 	case string:
-		if given.(string) == "" {
+		if value == "" {
 			return defaultValue
 		}
 		return given
