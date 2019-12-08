@@ -1,0 +1,14 @@
+name: Github Package Docker Image CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Github Package Build the Docker image
+      uses: matootie/github-docker@v1.0.1
+      with:
+        username: fahimshahrierrasel
+        personalAccessToken: ${{ secrets.PATOKEN }}
