@@ -7,13 +7,14 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"log"
 )
 
 func main() {
 	// Load environment variable from .env file
 	err := godotenv.Load()
 	if err != nil {
-		panic(err)
+		log.Printf("Error loading env file %v", err)
 	}
 
 	app := gin.Default()
@@ -26,6 +27,6 @@ func main() {
 
 	app.Use(cors.Default())
 	// Listen and Server in 0.0.0.0:8080
-	app.Run(":8080")
+	_ = app.Run(":8080")
 }
 
