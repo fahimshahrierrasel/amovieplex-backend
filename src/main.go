@@ -28,7 +28,6 @@ func main() {
 
 	api.ApplyRoutes(app)
 
-	app.Use(cors.New(config))
 	// Listen and Server in 0.0.0.0:8080
 	_ = app.Run(":8080")
 }
