@@ -18,14 +18,17 @@ func main() {
 	}
 
 	app := gin.Default()
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
 
 	db := database.GetDatabase()
 	app.Use(database.Inject(db))
 	app.Use(middlewares.JWTMiddleware())
+	app.Use(cors.New(config))
 
 	api.ApplyRoutes(app)
 
-	app.Use(cors.Default())
+	app.Use(cors.New(config))
 	// Listen and Server in 0.0.0.0:8080
 	_ = app.Run(":8080")
 }
